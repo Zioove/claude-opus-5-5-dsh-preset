@@ -1,0 +1,45 @@
+{
+  "name": "dsh-preset-claude-opus-5-5",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness agent preset + bundle plugin: the Claude Opus 5.5 persona on dsh's standard toolset, with a preset-local provenance skill and a slim spawned-subagent persona",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/",
+    "preset/",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "NOTICE.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "agent-preset",
+    "claude",
+    "opus",
+    "persona"
+  ],
+  "author": {
+    "name": "Zioove",
+    "url": "https://github.com/Zioove"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zioove/claude-opus-5-5-dsh-preset.git"
+  },
+  "license": "MIT"
+}
