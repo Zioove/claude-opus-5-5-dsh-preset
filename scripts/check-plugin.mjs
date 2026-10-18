@@ -1,5 +1,20 @@
 #!/usr/bin/env node
-
+/**
+ * Check the bundle half (lib/index.js) without installing it into a profile.
+ *
+ * Runs the real sync against a throwaway DSH_HOME in the OS temp directory and
+ * asserts the five properties the bundle relies on:
+ *   1. the target directory is derived from $DSH_HOME;
+ *   2. a first pass installs the bundled composition, metadata, and the whole
+ *      `skills/` tree (the composition mounts that tree through `customSkillDirs`,
+ *      so a skill the bundle forgets to copy simply would not exist);
+ *   3. a second pass writes nothing (idempotent), and the installed bytes equal
+ *      the bundled bytes — including a file the user edited being restored;
+ *   4. nothing is ever deleted: a file removed upstream stays on disk;
+ *   5. `sync: false` really skips provisioning.
+ *
+ * Run:  node scripts/check-plugin.mjs
+ */
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -46,10 +61,12 @@ try {
   const restored = await readFile(join(target, skillRelative), 'utf8')
   assert(restored.includes('claude-opus-5-5-provenance'), 'the restored skill file has the wrong content')
 
+  // A file removed upstream must survive: the sync is write-only, never a mirror.
   await writeFile(join(target, 'orphan.txt'), 'kept\n')
   await mod.syncPreset({ env, logger: quiet })
-  await readFile(join(target, 'orphan.txt'))
+  await readFile(join(target, 'orphan.txt')) // throws if the sync deleted it
 
+  // `sync: false` must skip provisioning entirely.
   const before = await mod.syncPreset({ env, logger: quiet })
   assert(before.written.length === 0, 'unexpected write before the sync:false probe')
   const untouched = await mod.syncPreset({ env, logger: quiet, config: { sync: false } })

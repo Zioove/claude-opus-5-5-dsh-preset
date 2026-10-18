@@ -1,0 +1,2 @@
+name: Claude Opus 5.5
+description: 以 Claude Opus 5.5 系统提示词为人格的完整编码 Agent：保留 standard 的全部工具（文件、Shell、检索、Skills、计划、目标、子代理、工作流），人格 prefix 段替换为 Claude Opus 5.5 全文，并附加本 harness 的工具可用性适配段。
